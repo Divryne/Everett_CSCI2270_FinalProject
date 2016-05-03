@@ -29,6 +29,8 @@ class Gallows
 {
 private:
     int lives;
+    int wins;
+    int losses;
     Subject subject;
     std::string word;
     std::string progress;
@@ -41,13 +43,18 @@ private:
     static const std::string moviesWordBank[];
 
 public:
-    Gallows(Difficulty difficulty, Subject subject);
+    Gallows(Difficulty difficulty, Subject subject, int prevWins, int prevLosses);
     ~Gallows();
 
     void guessCharacter(char c);
     void displayProgress();
     void displayInfo();
     void displayVictory();
+    void displayScore();
+    void addWin();
+    void addLoss();
+    int getWins();
+    int getLosses();
     bool hasWon();
     bool hasDied();
 

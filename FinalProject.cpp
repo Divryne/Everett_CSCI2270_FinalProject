@@ -65,7 +65,7 @@ Subject getSubject()
     return subject;
 }
 
-void playGame()
+void playGame(int prevWins, int prevLosses)
 {
     // play an actual game
     // this is put into a function to allow multiple plays
@@ -73,14 +73,14 @@ void playGame()
     Difficulty difficulty = getDifficulty();
     Subject subject = getSubject();
 
-    Gallows gallows = Gallows(difficulty, subject);
+    Gallows gallows = Gallows(difficulty, subject, prevWins, prevLosses);
     std::cout << "-------------------------------------------------------" << std::endl << "Let's begin! Your word has " << gallows.getCharacters() << " characters and is from the subject '" << gallows.getSubject() << "'. You have " << gallows.getLives() << " lives remaining." << std::endl;
 
 
     std::string input = "";
     while (true) {
         gallows.displayProgress();
-        std::cout << "Your guess (or 'quit'/'reset'/'info'): ";
+        std::cout << "Your guess (or 'quit'/'reset'/'info'/'score'): ";
         std::getline(std::cin, input);
 
         if (input == "quit") {
@@ -88,11 +88,14 @@ void playGame()
         }
         else if (input == "reset") {
             std::cout << "-------------------------------------------------------" << std::endl;
-            playGame();
+            playGame(0, 0);
             return;
         }
         else if (input == "info") {
             gallows.displayInfo();
+        }
+        else if (input == "score") {
+            gallows.displayScore();
         }
         else if (input.length() > 1) {
             std::cout << "Your guess should only be one character. Please try again." << std::endl;
@@ -101,6 +104,8 @@ void playGame()
             gallows.guessCharacter(input[0]);
 
             if (gallows.hasDied()) {
+                gallows.addLoss();
+
                 // user has lost. ask them if they want to play again.
                 std::cout << "Would you like to try again? (y/n): ";
                 std::getline(std::cin, input);
@@ -114,13 +119,15 @@ void playGame()
                     break;
                 else {
                     std::cout << "-------------------------------------------------------" << std::endl;
-                    playGame();
+                    playGame(gallows.getWins(), gallows.getLosses());
                     return;
                 }
             }
         }
 
         if (gallows.hasWon()) {
+            gallows.addWin();
+
             // user has won. ask them if they want to play again.
             gallows.displayVictory();
             std::cout << "Would you like to play again? (y/n): ";
@@ -135,7 +142,7 @@ void playGame()
                 break;
             else {
                 std::cout << "-------------------------------------------------------" << std::endl;
-                playGame();
+                playGame(gallows.getWins(), gallows.getLosses());
                 return;
             }
         }
@@ -150,5 +157,5 @@ int main()
     std::cout << "Hello! Welcome to the gallows. Let's play some hangman!" << std::endl << "-------------------------------------------------------" << std::endl;
 
     // begin with single play
-    playGame();
+    playGame(0, 0);
 }

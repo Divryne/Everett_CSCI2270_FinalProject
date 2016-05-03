@@ -12,9 +12,12 @@ const std::string Gallows::booksWordBank[] = {"MACBETH", "HAMLET", "DRACULA", "O
 
 const std::string Gallows::moviesWordBank[] = {"LOOPER", "CLOVERFIELD", "SAW", "BATMAN", "SUPERMAN", "DEADPOOL", "XMEN", "HULK", "CONSTANTINE", "MUMMY", "WICKERMAN", "HANCOCK", "KICKASS", "THOR", "WOLVERINE"};
 
-Gallows::Gallows(Difficulty difficulty, Subject subject)
+Gallows::Gallows(Difficulty difficulty, Subject subject, int prevWins, int prevLosses)
     : subject(subject), guessedHead(nullptr)
 {
+    wins = prevWins;
+    losses = prevLosses;
+
     // set the number of lives based on the desired difficulty
     switch (difficulty) {
         case Difficulty::EASY:
@@ -140,6 +143,26 @@ bool Gallows::hasDied()
     return lives == 0;
 }
 
+void Gallows::addWin()
+{
+    wins = wins + 1;
+}
+
+void Gallows::addLoss()
+{
+    losses = losses + 1;
+}
+
+int Gallows::getWins()
+{
+    return wins;
+}
+
+int Gallows::getLosses()
+{
+    return losses;
+}
+
 void Gallows::displayProgress()
 {
     // show guessed characters and underscores elsewhere
@@ -159,6 +182,13 @@ void Gallows::displayInfo()
 void Gallows::displayVictory()
 {
     std::cout << "Congratulations! You have won. The word was " << word << "." << std::endl;
+}
+
+void Gallows::displayScore()
+{
+    std::cout << "Current Score: " << std::endl;
+    std::cout << "Wins: " << wins << std::endl;
+    std::cout << "Losses: " << losses << std::endl;
 }
 
 std::string Gallows::getSubject()
